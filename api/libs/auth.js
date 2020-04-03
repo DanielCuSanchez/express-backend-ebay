@@ -1,9 +1,11 @@
 const bcrypt = require('bcrypt')
 const _ = require('underscore')
-const logger = require('../../utils/logger')
-const usuarios = require('../../database').usuarios
 const passportJWT = require('passport-jwt')
+
+const logger = require('../../utils/logger')
 const config = require('../../config')
+const usuarioController = require('../recursos/usuarios/usuarios.controller')
+
 
 let jwtOptions = {
     secretOrKey: config.jwt.secreto,
@@ -11,17 +13,26 @@ let jwtOptions = {
 }
 //jwtOptions -> es para configuracion del passportJWT Strategy
 module.exports = new passportJWT.Strategy(jwtOptions, (jwtPayload, next) => { //jwtPayload es el token que recib en formato JSON
-    let index = _.findIndex(usuarios, usuario => usuario.id == jwtPayload.id)
-    if (index == -1) {
-        logger.info(`El usuario ${usuarios[index].username} no existe`)
-        next(null, false)
-    } else {
-        logger.info(`El usuario ${usuarios[index].username} es autenticado`)
-        next(null, {
-            username: usuarios[index].username,
-            id: usuarios[index].id
+    //console.log(jwtPayload.id)
+    usuarioController.obtenerUsuario({ id: jwtPayload.id })
+        .then(usuario => {
+            if (!usuario) {
+                logger.info(`JWT Token no es válido. Usuario con ID [${jwtPayload.id}] NO EXISTE`)
+                next(null, false)//No ocurrio error pero fallo la validación del token 
+                return
+            }
+            logger.info(`El usuario [${usuario.username}] suministro token válido!`)
+            next(null, {
+                username: usuario.username,
+                id: usuario._id
+            })
+
         })
-    }
+        .catch(error => {
+            logger.error(`Ocurrio un error al validar el token del usuario id[${jwtPayload.id}]`, error)
+            next(error, false)
+        })
+
 })
 
 

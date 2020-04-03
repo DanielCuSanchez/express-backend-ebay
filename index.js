@@ -18,13 +18,13 @@ mongoose.connect('mongodb://127.0.0.1:27017/ebay', {
 })
 
 const mongo = mongoose.connection
-mongo.on('error',() => {
+mongo.on('error', () => {
     logger.error('Fallo la conexion de mongo db')
     process.exit(1)
 })
-.once('open',()=>{
-    console.log('Database connected')
-})
+    .once('open', () => {
+        console.log('Database connected')
+    })
 
 //const BasicStrategy = require('passport-http').BasicStrategy
 const authJWT = require('./api/libs/auth')

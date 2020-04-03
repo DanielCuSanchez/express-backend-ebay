@@ -21,7 +21,7 @@ switch (ambiente) {
     default:
         configuracionAmbiente = require('./dev')
 }
-console.log({...configuracionBase, ...configuracionAmbiente})
+//  console.log({...configuracionBase, ...configuracionAmbiente})
 
 module.exports = {
     ...configuracionBase,
