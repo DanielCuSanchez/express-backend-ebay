@@ -28,10 +28,19 @@ function borrarProductoById(id) {
     return Producto.findByIdAndRemove(id)
 }
 
+function guardarUrlDeImagen(id, imageURL) {
+    return Producto.findOneAndUpdate({ _id: id }, {
+        imagen: imageURL
+    }, {
+        new: true
+    })
+}
+
 module.exports = {
     crearProducto,
     obtenerProductos,
     obtenerProductoById,
     reemplazarProductoById,
-    borrarProductoById
+    borrarProductoById,
+    guardarUrlDeImagen
 }

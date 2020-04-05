@@ -3,7 +3,7 @@ const express = require('express')
 const _ = require('underscore')
 const passport = require('passport')
 
-
+const { guardarImagen } = require('../../data/images.controller')
 const productoController = require('./productos.controller')
 const { validarImagenDeProducto, validarDataDeProducto } = require('./productos.validate')
 const log = require('../../../utils/logger')
@@ -85,12 +85,25 @@ productosRouter.put('/:id', [authUser, validarID, validarDataDeProducto], proces
 
 }))
 
-productosRouter.put('/:id/imagen', [validarImagenDeProducto], procesarErrores(async (req, res) => {
+productosRouter.put('/:id/imagen', [authUser, validarImagenDeProducto], procesarErrores(async (req, res) => {
     log.info(`Received request to upload image for [${req.params.id}]. Size ${req.get('content-length')}`)
 
     // TODO: Decidir donde guardar la imagen. Disco, S3, MongoDB, memoria, etc
 
-    res.json({ url: "blabla" })
+    const id = req.params.id
+    const username = req.user.username
+
+    const nombreRandomizado = `${uuidV4()}.${req.extensionDeArchivo}`
+
+    await guardarImagen(req.body, nombreRandomizado)
+
+    const urlDeImagen = `https://danielcu-ebay.s3-us-west-2.amazonaws.com/imagenes/${nombreRandomizado}`
+
+    const productoModificado = await productoController.guardarUrlDeImagen(id, urlDeImagen)
+
+    log.info(`Imagen de producto con id[${id}] fue modificada. Link de la nueva imagen[${urlDeImagen}]`)
+
+    res.json(productoModificado)
 }))
 
 productosRouter.delete('/:id', [authUser, validarID], procesarErrores(async (req, res) => {

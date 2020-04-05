@@ -19,6 +19,9 @@ const productosSchema = new mongoose.Schema({
     dueño: {
         type: String,
         required: [true, 'El producto debe tener un dueño']
+    },
+    imagen: {
+        type: String
     }
 })
 

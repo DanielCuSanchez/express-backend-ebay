@@ -4,6 +4,7 @@ const morgan = require('morgan')
 const passport = require('passport')
 const mongoose = require('mongoose')
 const app = express()
+require('dotenv').config()
 
 const config = require('./config')
 const productosRouter = require('./api/recursos/productos/productos.routes')

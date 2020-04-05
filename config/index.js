@@ -1,7 +1,11 @@
 const ambiente = process.env.NODE_ENV || 'dev'
 let configuracionBase = {
     jwt: {},
-    puerto: 3010
+    puerto: 3010,
+    s3: {
+        accessKeyId: process.env.S3_ACCESS_KEY,
+        secretAccessKey: process.env.S3_SECRET_ACCESS_KEY
+    }
 }
 
 let configuracionAmbiente = {}

@@ -8553,3 +8553,40 @@ info: 2020-04-04T22:23:40.565Z http://localhost:3010
 info: 2020-04-04T22:23:49.723Z ::1 - PUT /productos/80051684-2d62-478c-95c3-bf36c1d7852c/imagen HTTP/1.1 500 2123 - 2.497 ms
 info: 2020-04-04T22:26:18.747Z http://localhost:3010
 info: 2020-04-04T22:26:22.405Z ::1 - PUT /productos/80051684-2d62-478c-95c3-bf36c1d7852c/imagen HTTP/1.1 400 93 - 4.011 ms
+info: 2020-04-05T02:12:21.424Z http://localhost:3010
+info: 2020-04-05T02:12:26.091Z Usuario: danielcu1 autenticado!
+info: 2020-04-05T02:12:26.101Z ::1 - POST /usuarios/login HTTP/1.1 200 183 - 129.667 ms
+info: 2020-04-05T02:12:56.036Z El usuario [danielcu1] suministro token válido!
+info: 2020-04-05T02:12:56.065Z [Producto creado exitosamente {"_id":"5e893ea8d4778133d89d6000","titulo":"Camara y diseño","precio":20,"moneda":"USD","dueño":"danielcu1","__v":0}
+info: 2020-04-05T02:12:56.067Z ::1 - POST /productos HTTP/1.1 201 118 - 37.203 ms
+info: 2020-04-05T19:28:01.569Z http://localhost:3010
+info: 2020-04-05T19:28:31.808Z Usuario: danielcu1 autenticado!
+info: 2020-04-05T19:28:31.824Z ::1 - POST /usuarios/login HTTP/1.1 200 183 - 160.006 ms
+info: 2020-04-05T19:29:13.285Z El usuario [danielcu1] suministro token válido!
+info: 2020-04-05T19:29:13.319Z [Producto creado exitosamente {"_id":"5e8a318926ca1038cc733025","titulo":"Gatito","precio":10,"moneda":"USD","dueño":"danielcu1","__v":0}
+info: 2020-04-05T19:29:13.322Z ::1 - POST /productos HTTP/1.1 201 108 - 45.977 ms
+info: 2020-04-05T19:30:22.279Z ::1 - PUT /productos/5e8a318926ca1038cc733025/imagen HTTP/1.1 401 - - 3.317 ms
+info: 2020-04-05T19:31:16.636Z El usuario [danielcu1] suministro token válido!
+info: 2020-04-05T19:31:16.669Z Received request to upload image for [5e8a318926ca1038cc733025]. Size 271192
+info: 2020-04-05T19:31:20.279Z Imagen de producto con id[5e8a318926ca1038cc733025] fue modificada. Link de la nueva imagen[https://s3.amazon.com/ebay-alternet/imagenes/5624ed5c-744e-4126-b8ea-4605a3ea874b.jpg]
+info: 2020-04-05T19:31:20.317Z ::1 - PUT /productos/5e8a318926ca1038cc733025/imagen HTTP/1.1 200 205 - 3657.461 ms
+info: 2020-04-05T20:22:30.268Z http://localhost:3010
+info: 2020-04-05T20:22:32.762Z http://localhost:3010
+info: 2020-04-05T20:22:43.732Z http://localhost:3010
+info: 2020-04-05T20:22:52.526Z http://localhost:3010
+info: 2020-04-05T20:23:37.851Z http://localhost:3010
+info: 2020-04-05T20:23:40.048Z http://localhost:3010
+info: 2020-04-05T20:30:18.519Z Usuario: danielcu1 autenticado!
+info: 2020-04-05T20:30:18.536Z ::1 - POST /usuarios/login HTTP/1.1 200 183 - 188.464 ms
+info: 2020-04-05T20:30:47.208Z El usuario [danielcu1] suministro token válido!
+info: 2020-04-05T20:30:47.212Z Received request to upload image for [5e8a318926ca1038cc733025]. Size 271192
+info: 2020-04-05T20:30:50.694Z Imagen de producto con id[5e8a318926ca1038cc733025] fue modificada. Link de la nueva imagen[https://s3.amazon.com/danielcu-ebay/imagenes/32c7f2ae-8bce-498f-8d00-8d998206a9ff.jpg]
+info: 2020-04-05T20:30:50.701Z ::1 - PUT /productos/5e8a318926ca1038cc733025/imagen HTTP/1.1 200 205 - 3499.664 ms
+info: 2020-04-05T20:32:41.788Z http://localhost:3010
+info: 2020-04-05T20:32:54.888Z http://localhost:3010
+info: 2020-04-05T20:35:05.491Z Usuario: danielcu1 autenticado!
+info: 2020-04-05T20:35:05.511Z ::1 - POST /usuarios/login HTTP/1.1 200 183 - 188.665 ms
+info: 2020-04-05T20:35:35.003Z El usuario [danielcu1] suministro token válido!
+info: 2020-04-05T20:35:35.017Z Received request to upload image for [5e8a318926ca1038cc733025]. Size 271192
+info: 2020-04-05T20:35:53.632Z Imagen de producto con id[5e8a318926ca1038cc733025] fue modificada. Link de la nueva imagen[https://danielcu-ebay.s3-us-west-2.amazonaws.com/imagenes/e93292b9-853a-4005-bb2f-3c61d11ec5c0.jpg]
+info: 2020-04-05T20:35:53.640Z ::1 - PUT /productos/5e8a318926ca1038cc733025/imagen HTTP/1.1 200 218 - 18642.480 ms
