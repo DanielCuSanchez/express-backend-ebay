@@ -1,5 +1,4 @@
-const ambiente = process.env.NODE_ENV || 'development'
-
+const ambiente = process.env.NODE_ENV || 'dev'
 let configuracionBase = {
     jwt: {},
     puerto: 3010
@@ -21,7 +20,7 @@ switch (ambiente) {
     default:
         configuracionAmbiente = require('./dev')
 }
-//  console.log({...configuracionBase, ...configuracionAmbiente})
+console.log({ ...configuracionBase, ...configuracionAmbiente })
 
 module.exports = {
     ...configuracionBase,

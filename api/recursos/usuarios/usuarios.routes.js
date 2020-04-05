@@ -10,6 +10,8 @@ const usuariosController = require('./usuarios.controller')
 const validarUsuario = require('./usuarios.validate').validarUsuario
 const validarPedidoDeLogin = require('./usuarios.validate').validarPedidoDeLogin
 const config = require('../../../config')
+const procesarErrores = require('../../libs/errorHandler').procesarErrores
+const { DatosDeUsuarioYaEnUso, CredencialesIncorrectas } = require('./usuarios.error')
 
 function transformarBodyALowerCase(req, res, next) {
     req.body.username && (req.body.username = req.body.username.toLowerCase())
@@ -18,73 +20,42 @@ function transformarBodyALowerCase(req, res, next) {
 }
 
 
-usuariosRouter.get('/', (req, res) => {
-    usuariosController.obtenerUsuarios()
+usuariosRouter.get('/', procesarErrores((req, res) => {
+    return usuariosController.obtenerUsuarios()
         .then(usuarios => {
             res.json(usuarios)
         })
-        .catch(e => {
-            res.status(500).send('Error al obtener los usuarios')
-        })
-})
-usuariosRouter.post('/', [validarUsuario, transformarBodyALowerCase], (req, res) => {
+}))
+usuariosRouter.post('/', [validarUsuario, transformarBodyALowerCase], procesarErrores((req, res) => {
     let nuevoUsuario = req.body
 
-    usuariosController.usuarioExiste(nuevoUsuario.username, nuevoUsuario.email)
+    return usuariosController.usuarioExiste(nuevoUsuario.username, nuevoUsuario.email)
         .then(usuarioExiste => {
             if (usuarioExiste) {
-                log.warn(`Email [${nuevoUsuario.email}] o username [${nuevoUsuario.username}] ya existen en DB`)
-                res.status(409).send(`Email [${nuevoUsuario.email}] o username [${nuevoUsuario.username}] ya existen en DB`)
-                return
+                throw new DatosDeUsuarioYaEnUso()
             }
-
-            bcrypt.hash(nuevoUsuario.password, 10, (error, hashPassword) => {
-                if (error) {
-                    log.error(`Error ocurrio al tratar de obtener el hash de la una contraseña`, error)
-                    res.status(500).send(`Error procesando la creación del usuario`)
-                    return
-                }
-                usuariosController.crearUsuario(nuevoUsuario, hashPassword)
-                    .then(usuario => {
-                        res.status(201).send(`Usuario creado exitosamente!`)
-                    })
-                    .catch(e => {
-                        log.error(`Error al crear el usuario`, e)
-                        res.status(500).send(`Error procesando la creación del usuario`)
-                    })
-            })
+            return bcrypt.hash(nuevoUsuario.password, 10)
         })
-        .catch(e => {
-            log.error(`Ocurrio un error al tratar de verificar usuario [${nuevoUsuario.username}] estaba en la DB`)
-            res.status(500).send(`Error al tratar de verificar su usuario o email`)
-        })
-})
+        .then(hashPassword => {
+            return usuariosController.crearUsuario(nuevoUsuario, hashPassword)
+                .then(usuario => {
+                    res.status(201).send(`Usuario creado exitosamente!`)
+                    res.json(usuario)
+                })
 
-usuariosRouter.post('/login', [validarPedidoDeLogin, transformarBodyALowerCase], async (req, res) => {
+        })
+}))
+
+usuariosRouter.post('/login', [validarPedidoDeLogin, transformarBodyALowerCase], procesarErrores(async (req, res) => {
     let usuarioNoAutenticado = req.body
-    let usuarioRegistrado
 
-    try {
-        usuarioRegistrado = await usuariosController.obtenerUsuario({ username: usuarioNoAutenticado.username })
-    } catch (error) {
-        log.error(`Error al obtener el usuario [${usuarioNoAutenticado.username}]`, error)
-        res.status(500).send(`Ocurrio un error durante el proceso de login`)
-        return
-    }
+    let usuarioRegistrado = await usuariosController.obtenerUsuario({ username: usuarioNoAutenticado.username })
 
     if (!usuarioRegistrado) {
         log.info(`Usuario [${usuarioNoAutenticado.username}] No existe. No puede ser autenticado`)
-        res.status(400).send(`Error. Asegurate de tener las credenciales correctar. Usuario y constraseña`)
-        return
+        throw new CredencialesIncorrectas()
     }
-    let contraseñaCorrecta
-    try {
-        contraseñaCorrecta = await bcrypt.compare(usuarioNoAutenticado.password, usuarioRegistrado.password)
-    } catch (error) {
-        log.error(`Error al comparar la contraseña del usuario [${usuarioRegistrado.username}]`)
-        res.status(400).send(`Error. Asegurate de tener las credenciales correctar. Usuario y constraseña`)
-        return
-    }
+    let contraseñaCorrecta = await bcrypt.compare(usuarioNoAutenticado.password, usuarioRegistrado.password)
 
     if (contraseñaCorrecta) {
         log.info(`Usuario: ${usuarioRegistrado.username} autenticado!`)
@@ -92,10 +63,10 @@ usuariosRouter.post('/login', [validarPedidoDeLogin, transformarBodyALowerCase],
         res.json({ token })
     } else {
         log.info(`Usuario ${usuarioNoAutenticado.username} no completo autenticación. Contraseña incorrecta.`)
-        res.status(400).send(`El usuario: ${usuarioNoAutenticado.username}, no completo autenticación. Password incorrecta`)
+        throw new CredencialesIncorrectas()
     }
 
-})
+}))
 
 
 module.exports = usuariosRouter
