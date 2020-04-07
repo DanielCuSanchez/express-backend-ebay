@@ -1,6 +1,6 @@
 # backend-ebay
 
-Estructura logica de backend. 
+Estructura logica de backend de API rest. 
 
 - Autenticación de usuarios
 - Uso de middlewares.
